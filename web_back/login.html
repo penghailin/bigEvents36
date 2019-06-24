@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -29,7 +30,27 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+        </div>
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-primary">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
     <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
     <script>
         //1.给登录一个点击事件   
        // 登录按钮是一个form表单中的submit, 所以要去掉他的默认跳转.
@@ -43,7 +64,11 @@
               var userName = $('.input_txt').val().trim();
               var password = $('.input_pass').val().trim();
                   if(userName == '' || password == ''){
-                      alert('账号或者密码为空!!!')
+                      //alert('账号或者密码为空!!!')
+                      $('.modal-body').text('账号或者密码为空!!!')
+                      $('#myModal').modal({
+                        keyboard: true
+                      })
                       return;
                   }
                   $.ajax({
@@ -59,7 +84,11 @@
                           if(backDate.code == 200){
                               window.location.href = './index.html';
                           }else{
-                              alert('账号或者密码错误!!!');
+                              //alert('账号或者密码错误!!!');
+                              $('.modal-body').text('账号或者密码错误!!!')
+                              $('#myModal').modal({
+                                keyboard: true
+                              })
                           }
                       }
                   })
