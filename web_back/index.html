@@ -112,6 +112,17 @@
     </script>
     <script>
         $(function () {
+            $.ajax({
+                url:'http://localhost:8000/admin/getuser',
+                success:function(backDate){
+                    console.log(backDate);
+                    if(backDate.code ==200){
+                        $('.user_info img').attr('src',backDate.data.user_pic);
+                        $('.user_info span').html('欢迎&nbsp;&nbsp;'+backDate.data.nickname);
+                        $('.user_center_link img').attr('src',backDate.data.user_pic);
+                    }
+                }
+            })
         /*
         1.点击退出那个a标签,发送ajax请求,
         2.如果成功就跳转到登录页.
