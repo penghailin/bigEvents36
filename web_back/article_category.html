@@ -91,11 +91,11 @@
                     <form>
                         <div class="form-group">
                             <label for="recipient-name" class="control-label">分类名称:</label>
-                            <input type="text" class="form-control" id="recipient-name">
+                            <input type="text" class="form-control name">
                         </div>
                         <div class="form-group">
                             <label for="message-text" class="control-label">分类别名:</label>
-                            <input type="text" class="form-control" id="recipient-name">
+                            <input type="text" class="form-control slug">
                         </div>
                     </form>
                 </div>
@@ -117,12 +117,6 @@
             alert('shutoff');
             $('#addModal').modal('hide');
         });
-
-        $('#model_add').click(function () {
-            alert('add');
-            $('#addModal').modal('hide');
-        });
-
         $('.category_table').delegate('a', 'click', function () {
             if ($(this).hasClass('btn-info')) {
                 $('#addModal .modal-title').html('修改分类名称');
@@ -146,17 +140,55 @@
     </script>
     <script>
         $(function () {
-            $.ajax({
-                url: 'http://localhost:8000/admin/category_search',
-                success: function (backDaya) {
-                    console.log(backDaya);
-                    if(backDaya.code ==200){
-                        var resHtml =  template('tmp_classify',backDaya);
-                        $('tbody').html(resHtml);
+            function Thenewcategory() {
+                $.ajax({
+                    url: 'http://localhost:8000/admin/category_search',
+                    success: function (backDaya) {
+                        console.log(backDaya);
+                        if (backDaya.code == 200) {
+                            var resHtml = template('tmp_classify', backDaya);
+                            $('tbody').html(resHtml);
+                        }
                     }
-                }
-            })
-        })
+                });
+            }
+
+            Thenewcategory();
+            /**1.给新增按钮设置一个点击事件.
+    
+             注意: 以前写静态模板的时候默认有一个点击事件.要么删掉,要么自己改改.
+    
+    2.获取用户输入的类别名称和别名
+    
+    3.发送ajax请求
+    
+    4.新增成功后,再重新获取一次文章类别
+    
+        注意:页面一进来要获取,  新增成功后也要获取, 所以可以搞成一个函数调用.*/
+            $('#model_add').click(function () {
+                //获取用户输入的类别名称和别名
+                var cateName = $('.modal-body .name').val();
+                var cateSlug = $('.modal-body .slug').val();
+                //发送ajax请求
+                $.ajax({
+                    type: 'post',
+                    url: 'http://localhost:8000/admin/category_add',
+                    data: {
+                        name: cateName,
+                        slug: cateSlug
+                    },
+                    success: function (backDaya) {
+                        console.log(backDaya);
+                        if (backDaya.code == 200) {
+                            //4.新增成功后,再重新获取一次文章类别
+                            Thenewcategory();
+                        }
+                    }
+                })
+                //影藏模态框
+                $('#addModal').modal('hide');
+            });
+        });
     </script>
 </body>
 
