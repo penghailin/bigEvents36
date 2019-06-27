@@ -225,6 +225,12 @@
                     $('#addModal .modal-title').html('修改分类');
                    //给那个模态框里面的按钮,移除一个这个btn-success类.和修改文本
                    $('#model_add').addClass('btn-info').text('保存');
+
+                   //获取当前点击a标签的文章类别别名
+                   var dataName = $(this).parent().prev().prev().text();
+                   var dataSlug = $(this).parent().prev().text();
+                   $('.modal-body .name').val(dataName);
+                   $('.modal-body .slug').val(dataSlug);
                     //模态框
                     $('#addModal').modal('show');
                 
