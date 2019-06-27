@@ -72,7 +72,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="3" class="text-center">
-                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#addModal">新增分类</a>
+                            <a href="#" class="btn btn-success btn-addCate" data-toggle="modal" data-target="#addModal">新增分类</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -116,13 +116,7 @@
         $('#model_shutoff').click(function () {
             alert('shutoff');
             $('#addModal').modal('hide');
-        });
-        $('.category_table').delegate('a', 'click', function () {
-            if ($(this).hasClass('btn-info')) {
-                $('#addModal .modal-title').html('修改分类名称');
-                $('#addModal').modal('show');
-            }
-        })      
+        });      
     </script>
     <script src="./js/bootstrap/js/template-web.js"></script>
     <script id="tmp_classify" type="text/html">
@@ -131,8 +125,7 @@
             <td>{{v.name}}</td>
             <td>{{v.slug}}</td>
             <td class="text-center">
-                <a href="javascript:editTr({&quot;id&quot;:&quot;4&quot;,&quot;slug&quot;:&quot;travel&quot;,&quot;name&quot;:&quot;爱旅行&quot;});"
-                    class="btn btn-info btn-xs">编辑</a>
+                <a href="#" btn-id='{{v.id}}' class="btn btn-info btn-xs btn-edit">编辑</a>
                 <a href="#" data-id='{{v.id}}' class="btn btn-danger btn-xs btn-delete">删除</a>
             </td>
         </tr>
@@ -154,6 +147,16 @@
                 });
             }
             Thenewcategory();
+
+            //5.新增和编辑弹出的是同一个模态框, 那模态框里面的新增(保存)按钮要处理2套逻辑.
+                $('.btn-addCate').on('click',function(){
+                    $('#addModal .modal-title').html('新增分类');
+                   //给那个模态框里面的按钮,移除一个这个btn-success类.和修改文本
+                   $('#model_add').addClass('btn-info').text('新增');
+                })
+
+
+
             /**1.给新增按钮设置一个点击事件
              注意: 以前写静态模板的时候默认有一个点击事件.要么删掉,要么自己改改.
              2.获取用户输入的类别名称和别名
@@ -210,12 +213,21 @@
                             console.log(backData);
                             if (backData.code == 200) {
                                 //Thenewcategory();
-                               // 直接把这一行 从 dom树中移除 就ok.
+                                // 直接把这一行 从 dom树中移除 就ok.
                                 thca.parent().parent().remove();
                             }
                         }
                     })
                 }
+            });
+            $('tbody').on('click','.btn-edit',function () {
+                //修改模态框里面的文本
+                    $('#addModal .modal-title').html('修改分类');
+                   //给那个模态框里面的按钮,移除一个这个btn-success类.和修改文本
+                   $('#model_add').addClass('btn-info').text('保存');
+                    //模态框
+                    $('#addModal').modal('show');
+                
             })
         });
     </script>
