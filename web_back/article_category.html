@@ -133,12 +133,13 @@
             <td class="text-center">
                 <a href="javascript:editTr({&quot;id&quot;:&quot;4&quot;,&quot;slug&quot;:&quot;travel&quot;,&quot;name&quot;:&quot;爱旅行&quot;});"
                     class="btn btn-info btn-xs">编辑</a>
-                <a href="javascript:deleteTr({{v.id}});" class="btn btn-danger btn-xs">删除</a>
+                <a href="#" data-id='{{v.id}}' class="btn btn-danger btn-xs btn-delete">删除</a>
             </td>
         </tr>
            {{/each}}
     </script>
     <script>
+        //获取文章类别
         $(function () {
             function Thenewcategory() {
                 $.ajax({
@@ -152,19 +153,13 @@
                     }
                 });
             }
-
             Thenewcategory();
-            /**1.给新增按钮设置一个点击事件.
-    
+            /**1.给新增按钮设置一个点击事件
              注意: 以前写静态模板的时候默认有一个点击事件.要么删掉,要么自己改改.
-    
-    2.获取用户输入的类别名称和别名
-    
-    3.发送ajax请求
-    
-    4.新增成功后,再重新获取一次文章类别
-    
-        注意:页面一进来要获取,  新增成功后也要获取, 所以可以搞成一个函数调用.*/
+             2.获取用户输入的类别名称和别名
+             3.发送ajax请求
+             4.新增成功后,再重新获取一次文章类别
+            注意:页面一进来要获取,  新增成功后也要获取, 所以可以搞成一个函数调用.*/
             $('#model_add').click(function () {
                 //获取用户输入的类别名称和别名
                 var cateName = $('.modal-body .name').val();
@@ -188,6 +183,40 @@
                 //影藏模态框
                 $('#addModal').modal('hide');
             });
+
+            //分类删除
+            /*1.给删除按钮们注册事件.  使用委托的方式.
+              2.删除逻辑里面如何知道删除的是哪一个数据呢? 通过id区分.
+​	                搞一个自定义属性data-id来保存id
+              3.根据id删除文章类别的接口通过验证没有问题
+              4.删除成功后,重新的再渲染一次数据
+​                数据是确定删除成功了的, 那现在呢需求是不要看到删除的这一行,
+​                我们现在的做法是重新渲染,那如果数据量很大的话, 重新渲染就消耗时间.
+​                所以我们可以搞一个障眼法, 把直接把这一行 从 dom树中移除 就ok.
+               */
+            $('tbody').on('click', '.btn-delete', function () {
+                var thca = $(this);
+                //确认是否删除
+                if (confirm('你确定要删除吗?')) {
+                    //获取当前id
+                    var id = $(this).attr('data-id');
+                    $.ajax({
+                        type: 'post',
+                        url: 'http://localhost:8000/admin/category_delete',
+                        data: {
+                            id: id
+                        },
+                        success: function (backData) {
+                            console.log(backData);
+                            if (backData.code == 200) {
+                                //Thenewcategory();
+                               // 直接把这一行 从 dom树中移除 就ok.
+                                thca.parent().parent().remove();
+                            }
+                        }
+                    })
+                }
+            })
         });
     </script>
 </body>
